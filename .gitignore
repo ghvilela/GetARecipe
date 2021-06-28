@@ -1,0 +1,4 @@
+#ignore large data files
+**/data
+data/RAW_recipes.csv
+data/recipes_db.csv
