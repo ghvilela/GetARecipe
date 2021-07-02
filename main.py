@@ -1,5 +1,5 @@
-from recipes import Recipe
 from recipe_dict import recipe_dict
+from recipes import Recipe
 from math import inf
 from random import randrange
 
@@ -10,7 +10,6 @@ for i in recipe_dict:
     id = i["id"]
     id = Recipe(i, id)
     recipe_list.append(id)
-
 
 #ingredient list function
 def get_ingredient_list(recipes):
@@ -35,11 +34,10 @@ def get_ingredient_count(recipes):
 
 #def recipe_by_ingredient function
 def get_recipes_by_ingredient(recipes, ingredient):
-    recipes_by_ingredient = {}
-    recipes_by_ingredient[ingredient] = []
+    recipes_by_ingredient = []
     for recipe in recipes:
         if ingredient in recipe.ingredients:
-            recipes_by_ingredient[ingredient].append(recipe.name)
+            recipes_by_ingredient.append(recipe)
     return recipes_by_ingredient
 
 # ingredient for optimal subset function
@@ -53,6 +51,21 @@ def get_optimal_ingredient(recipes):
       optimal_ing = ingredient
       optimal_count = count
   return optimal_ing
+
+# logic for getting user choice
+def choose_recipe(choices, input_text):
+  count = 0
+  for choice in choices:
+    count += 1
+    print(f"{count}) {choice.name}\n")
+    
+  choice_range = [f"{num}" for num in range(1, count)]
+  user_choice = input(input_text)
+  if user_choice not in choice_range:
+    print(f"invalid input: please choose from 1 to {count}")
+    choose_recipe(choices, input_text)
+  else:
+    return choices[int(user_choice)-1]
 
 # quicksort function
 def quicksort(arr):
