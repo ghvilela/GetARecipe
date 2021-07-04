@@ -1,4 +1,5 @@
 from random import sample
+from typing import List
 from main import *
 from cfonts import render
 
@@ -31,20 +32,25 @@ def get_choice(choices, input_text):
   user_choice = input(input_text)
   if user_choice not in choice_range:
     print(f"invalid input: please choose from 1 to {count}")
-    get_choice(choices, input_text)
+    return get_choice(choices, input_text)
   else:
     return choices[int(user_choice)-1]
 
 #ingredient filtering logic
 def ingredient_filtering(list):
-    test = True
-    while test is True: 
-        search_ingredient_input = input("Type the first letter or first few letters of the ingredient you are looking for:")
-        match = find_match(list, search_ingredient_input)
-        for i in match:
+    search_ingredient_input = input("Type the first letter or first few letters of the ingredient you are looking for:")
+    match = find_match(list, search_ingredient_input)
+    if type(match) is not str:
+        print("\nMatches found:\n")
+        for i in match: 
             print (i)
-        test = bolean_test("Want to filter some more?")
-    return match
+    else:
+        print(match)
+    test = bolean_test("Want to filter some more?")
+    if test is True:
+        return ingredient_filtering(match)
+    else:
+        return match
 
 #recipe filtering logic
 def filter_recipes(ingredients, recipes):
