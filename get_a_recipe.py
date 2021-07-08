@@ -12,57 +12,6 @@ Welcome to Get'A Recipe, the Recipe suggestion app that will blow your...kitchen
 print(render(title))
 print(title_message)
 
-##helper variables and functions
-def bolean_test(prompt):
-    user_input = input(f"{prompt} [y/n]")
-    if user_input.lower() == "y":
-        return True
-    elif user_input.lower() == "n":
-        return False
-    else:
-        return bolean_test(prompt)
-
-def get_choice(choices, input_text):
-  count = 0
-  for choice in choices:
-    count += 1
-    print(f"{count}) {choice}\n")
-    
-  choice_range = [f"{num}" for num in range(1, count)]
-  user_choice = input(input_text)
-  if user_choice not in choice_range:
-    print(f"invalid input: please choose from 1 to {count}")
-    return get_choice(choices, input_text)
-  else:
-    return choices[int(user_choice)-1]
-
-#ingredient filtering logic
-def ingredient_filtering(list):
-    search_ingredient_input = input("Type the first letter or first few letters of the ingredient you are looking for:")
-    match = find_match(list, search_ingredient_input)
-    if type(match) is not str:
-        print("\nMatches found:\n")
-        for i in match: 
-            print (i)
-    else:
-        print(match)
-    test = bolean_test("Want to filter some more?")
-    if test is True:
-        return ingredient_filtering(match)
-    else:
-        return match
-
-#recipe filtering logic
-def filter_recipes(ingredients, recipes):
-    recipes_filtered = []
-    for i in ingredients:
-        subset = get_recipes_by_ingredient(recipes, i)
-        for r  in subset:
-            if r not in recipes_filtered:
-                recipes_filtered.append(r)
-    return recipes_filtered
-
-
 ## main logic for type ingredient mode
 def type_mode():
     print("Let's find the ingredient you are looking for...")

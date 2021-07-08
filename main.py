@@ -52,14 +52,14 @@ def get_optimal_ingredient(recipes):
       optimal_count = count
   return optimal_ing
 
-# logic for getting user choice
+# logic for getting user recipe choice
 def choose_recipe(choices, input_text):
   count = 0
   for choice in choices:
     count += 1
     print(f"{count}) {choice.name}\n")
     
-  choice_range = [f"{num}" for num in range(1, count)]
+  choice_range = [f"{num}" for num in range(1, count+1)]
   user_choice = input(input_text)
   if user_choice not in choice_range:
     print(f"invalid input: please choose from 1 to {count}")
@@ -75,25 +75,13 @@ def quicksort(arr):
           [i for i in arr if i == m] + \
           quicksort([i for i in arr if i > m])
 
-# # find ingredient by input funtion (replaced by find_match + check_match)
-# def find_ingredients(list, input):
-#     match_list = []
-#     for ingredient in list:
-#         match_count = 0
-#         for index in range(len(input)):
-#             if input[index] == ingredient[index]:
-#                 match_count += 1
-#             else:
-#                 break
-#         if match_count == len(input):
-#             match_list.append(ingredient)
-#     return match_list
-
 # quick search in sorted list
 def check_match(input, text):
   match_count = 0
   for char in range(len(input)):
-    if input[char] == text[char]:
+    if len(input) > len(text):
+      return False
+    elif input[char] == text[char]:
       match_count += 1
     else:
       break
@@ -113,47 +101,68 @@ def find_match(list, input):
   end = pivot
   #check for match
   if check_match(input,list[pivot]) is True:
-    while check_match(input,list[start]) is True and start>=0:
+    while start>=0 and check_match(input,list[start]) is True:
       start -= 1
-    while check_match(input,list[end]) is True and end<=len(list):
+    while end<=(len(list)-1) and check_match(input,list[end]) is True:
       end += 1
   #else call recursive steps
   else:
-    if input[0] < list[pivot][0]:
+    if input < list[pivot]:
       return find_match(list[:pivot+1], input)
     return find_match(list[pivot:], input)
   #return sliced list
   return list[start+1:end]
 
 
-# #instantiate recipe list and recipe_by_ingredient dict
-# ingredient_list = get_ingredient_list(recipe_list)
-# recipe_by_ingredient = get_recipes_by_ingredient(recipe_list, ingredient_list[32])
+##helper variables and functions
+def bolean_test(prompt):
+    user_input = input(f"{prompt} [y/n]")
+    if user_input.lower() == "y":
+        return True
+    elif user_input.lower() == "n":
+        return False
+    else:
+        return bolean_test(prompt)
 
-# #set optimal subset of recipes based on ingredient count and return list of recipes with that ingredient
-# optimal = get_optimal_ingredient(recipe_list)
-# salt_recipes = get_recipes_by_ingredient(recipe_list, optimal)
-# print(salt_recipes)
+def get_choice(choices, input_text):
+  count = 0
+  for choice in choices:
+    count += 1
+    print(f"{count}) {choice}\n")
+    
+  choice_range = [f"{num}" for num in range(1, count)]
+  user_choice = input(input_text)
+  if user_choice not in choice_range:
+    print(f"invalid input: please choose from 1 to {count}")
+    return get_choice(choices, input_text)
+  else:
+    return choices[int(user_choice)-1]
 
-# # instantiate ingredient list and sort it with quicksort
-# ingredient_list = get_ingredient_list(recipe_list)
-# sorted_list = quicksort(ingredient_list)
-# for i in range(50):
-#     print(sorted_list[i])
+#ingredient filtering logic
+def ingredient_filtering(ingredient_list):
+    search_ingredient_input = input("Type the first letter or first few letters of the ingredient you are looking for:")
+    match = find_match(ingredient_list, search_ingredient_input)
+    if type(match) is list:
+        print("\nMatches found:\n")
+        for i in match: 
+            print (i)
+        test = bolean_test("Want to filter some more?")
+    elif type(match) is str:
+        print(match)
+        test = False    
+    if test is True:
+        return ingredient_filtering(match)
+    else:
+        if type(match) is list:
+            return match
+        return ingredient_list
 
-# # print a list of matching ingredients based on user input
-# ingredient_list = get_ingredient_list(recipe_list)
-# match_list = find_ingredients(ingredient_list, input("say something"))
-# for i in match_list:
-#     print(i)
-
-# # test find_match
-# ingredient_list = get_ingredient_list(recipe_list)
-# sorted_ingredients = quicksort(ingredient_list)
-# match_list = find_match(sorted_ingredients, input("say something"))
-# for i in match_list:
-#     print(i)
-
-# # test check match
-# test = check_match("abc","dceabc")
-# print(test)
+#recipe filtering logic
+def filter_recipes(ingredients, recipes):
+    recipes_filtered = []
+    for i in ingredients:
+        subset = get_recipes_by_ingredient(recipes, i)
+        for r  in subset:
+            if r not in recipes_filtered:
+                recipes_filtered.append(r)
+    return recipes_filtered
